@@ -130,7 +130,7 @@ function impex_enqueue_assets() {
     wp_localize_script( 'impex-main-js', 'impexData', array(
         'ajaxUrl'  => admin_url( 'admin-ajax.php' ),
         'nonce'    => wp_create_nonce( 'impex_nonce' ),
-        'currency' => get_woocommerce_currency_symbol(),
+        'currency' => function_exists( 'get_woocommerce_currency_symbol' ) ? get_woocommerce_currency_symbol() : '$',
         'siteUrl'  => home_url(),
     ) );
 
@@ -184,68 +184,72 @@ add_action( 'widgets_init', 'impex_register_widgets' );
    WOOCOMMERCE HOOKS & CUSTOMIZATIONS
 ========================================================= */
 
-// Remove default WooCommerce styles (we use our own)
-add_filter( 'woocommerce_enqueue_styles', '__return_empty_array' );
+// WooCommerce-specific hooks — only register when WooCommerce is active
+add_action( 'plugins_loaded', function() {
+    if ( ! class_exists( 'WooCommerce' ) ) {
+        return;
+    }
 
-// Remove default breadcrumb in favor of custom
-// remove_action( 'woocommerce_before_main_content', 'woocommerce_breadcrumb', 20 );
+    // Remove default WooCommerce styles (we use our own)
+    add_filter( 'woocommerce_enqueue_styles', '__return_empty_array' );
 
-// Change number of products per row
-add_filter( 'loop_shop_columns', function() {
-    return 4;
+    // Change number of products per row
+    add_filter( 'loop_shop_columns', function() {
+        return 4;
+    } );
+
+    // Change number of products per page
+    add_filter( 'loop_shop_per_page', function() {
+        return 12;
+    } );
+
+    // Add custom wrapper to WooCommerce main content
+    add_action( 'woocommerce_before_main_content', function() {
+        echo '<div class="container">';
+    }, 10 );
+
+    add_action( 'woocommerce_after_main_content', function() {
+        echo '</div>';
+    }, 10 );
+
+    // Custom product loop wrapper
+    remove_action( 'woocommerce_before_shop_loop', 'woocommerce_result_count', 20 );
+    remove_action( 'woocommerce_before_shop_loop', 'woocommerce_catalog_ordering', 30 );
+
+    // Add custom badge for featured products
+    add_action( 'woocommerce_before_shop_loop_item_title', function() {
+        global $product;
+        if ( $product->is_featured() ) {
+            echo '<span class="product-badge badge-hot">' . esc_html__( 'HOT', 'impex-football' ) . '</span>';
+        }
+        if ( $product->is_on_sale() ) {
+            echo '<span class="product-badge badge-sale">' . esc_html__( 'SALE', 'impex-football' ) . '</span>';
+        }
+    }, 5 );
+
+    // Custom WooCommerce "add to cart" button text
+    add_filter( 'woocommerce_product_add_to_cart_text', function( $text, $product ) {
+        if ( $product->is_type( 'simple' ) && $product->is_purchasable() && $product->is_in_stock() ) {
+            return __( 'Add to Cart', 'impex-football' );
+        }
+        return $text;
+    }, 10, 2 );
+
+    // Custom placeholder image
+    add_filter( 'woocommerce_placeholder_img_src', function() {
+        return get_template_directory_uri() . '/assets/images/product-placeholder.svg';
+    } );
 } );
-
-// Change number of products per page
-add_filter( 'loop_shop_per_page', function() {
-    return 12;
-} );
-
-// Add custom wrapper to WooCommerce main content
-add_action( 'woocommerce_before_main_content', function() {
-    echo '<div class="container">';
-}, 10 );
-
-add_action( 'woocommerce_after_main_content', function() {
-    echo '</div>';
-}, 10 );
-
-// Custom product loop wrapper
-remove_action( 'woocommerce_before_shop_loop', 'woocommerce_result_count', 20 );
-remove_action( 'woocommerce_before_shop_loop', 'woocommerce_catalog_ordering', 30 );
-
-// Add custom badge for featured products
-add_action( 'woocommerce_before_shop_loop_item_title', function() {
-    global $product;
-    if ( $product->is_featured() ) {
-        echo '<span class="product-badge badge-hot">' . esc_html__( 'HOT', 'impex-football' ) . '</span>';
-    }
-    if ( $product->is_on_sale() ) {
-        echo '<span class="product-badge badge-sale">' . esc_html__( 'SALE', 'impex-football' ) . '</span>';
-    }
-}, 5 );
-
-// Custom WooCommerce "add to cart" button text
-add_filter( 'woocommerce_product_add_to_cart_text', function( $text, $product ) {
-    if ( $product->is_type( 'simple' ) && $product->is_purchasable() && $product->is_in_stock() ) {
-        return __( 'Add to Cart', 'impex-football' );
-    }
-    return $text;
-}, 10, 2 );
 
 // Add custom class to body on WooCommerce pages
 add_filter( 'body_class', function( $classes ) {
-    if ( is_woocommerce() || is_cart() || is_checkout() ) {
+    if ( function_exists( 'is_woocommerce' ) && ( is_woocommerce() || is_cart() || is_checkout() ) ) {
         $classes[] = 'impex-woo-page';
     }
     if ( is_front_page() ) {
         $classes[] = 'impex-homepage';
     }
     return $classes;
-} );
-
-// Custom placeholder image for products without images
-add_filter( 'woocommerce_placeholder_img_src', function() {
-    return IMPEX_THEME_URI . '/assets/images/product-placeholder.svg';
 } );
 
 /* =========================================================
