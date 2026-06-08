@@ -1,32 +1,35 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 100" width="300" height="100">
-  <!-- Background -->
-  <rect width="300" height="100" fill="transparent"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 100" width="320" height="100">
+  <defs>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFD700;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FFA500;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="ballGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#cccccc;stop-opacity:1" />
+    </linearGradient>
+  </defs>
 
-  <!-- Football Icon -->
-  <g transform="translate(10, 10)">
-    <!-- Main circle -->
-    <circle cx="40" cy="40" r="38" fill="#0a0a0a" stroke="#FFD700" stroke-width="2.5"/>
+  <!-- Football (soccer ball) graphic -->
+  <circle cx="50" cy="50" r="44" fill="url(#ballGrad)" stroke="#222" stroke-width="2"/>
 
-    <!-- Pentagon center -->
-    <polygon points="40,18 54,28 49,44 31,44 26,28" fill="#FFD700" stroke="#0a0a0a" stroke-width="1.5"/>
+  <!-- Pentagon patches -->
+  <polygon points="50,28 62,37 58,51 42,51 38,37" fill="#1a1a1a" stroke="#fff" stroke-width="0.8"/>
+  <polygon points="22,30 35,25 38,37 28,44 18,38" fill="#1a1a1a" stroke="#fff" stroke-width="0.8"/>
+  <polygon points="78,30 65,25 62,37 72,44 82,38" fill="#1a1a1a" stroke="#fff" stroke-width="0.8"/>
+  <polygon points="20,62 30,56 42,51 40,65 28,70" fill="#1a1a1a" stroke="#fff" stroke-width="0.8"/>
+  <polygon points="80,62 70,56 58,51 60,65 72,70" fill="#1a1a1a" stroke="#fff" stroke-width="0.8"/>
+  <polygon points="40,65 60,65 62,77 50,82 38,77" fill="#1a1a1a" stroke="#fff" stroke-width="0.8"/>
 
-    <!-- Surrounding pentagons (partial, football pattern) -->
-    <polygon points="40,18 54,28 62,16 52,6 28,6" fill="none" stroke="#FFD700" stroke-width="1.5"/>
-    <polygon points="54,28 49,44 63,50 72,38 62,16" fill="none" stroke="#FFD700" stroke-width="1.5"/>
-    <polygon points="49,44 31,44 27,58 40,64 53,58" fill="none" stroke="#FFD700" stroke-width="1.5"/>
-    <polygon points="31,44 26,28 12,22 8,38 17,50" fill="none" stroke="#FFD700" stroke-width="1.5"/>
-    <polygon points="26,28 40,18 28,6 14,10 12,22" fill="none" stroke="#FFD700" stroke-width="1.5"/>
-
-    <!-- Outer circle border -->
-    <circle cx="40" cy="40" r="38" fill="none" stroke="#FFD700" stroke-width="2.5"/>
-  </g>
+  <!-- Ball outline -->
+  <circle cx="50" cy="50" r="44" fill="none" stroke="#333" stroke-width="2"/>
 
   <!-- IMPEX Text -->
-  <text x="105" y="48" font-family="Arial Black, Arial, sans-serif" font-size="36" font-weight="900" fill="#FFFFFF" letter-spacing="4">IMPEX</text>
+  <text x="108" y="45" font-family="Arial Black, Arial, sans-serif" font-weight="900" font-size="36" fill="url(#goldGrad)" letter-spacing="3">IMPEX</text>
 
   <!-- Tagline -->
-  <text x="106" y="70" font-family="Arial, sans-serif" font-size="11" font-weight="400" fill="#FFD700" letter-spacing="6">FOOTBALL CO.</text>
+  <text x="110" y="65" font-family="Arial, sans-serif" font-weight="400" font-size="11" fill="#cccccc" letter-spacing="4">FOOTBALL MANUFACTURER</text>
 
-  <!-- Gold accent line -->
-  <line x1="105" y1="75" x2="285" y2="75" stroke="#FFD700" stroke-width="1.5"/>
+  <!-- Gold underline accent -->
+  <rect x="108" y="70" width="200" height="3" rx="1.5" fill="url(#goldGrad)"/>
 </svg>
