@@ -252,72 +252,10 @@ add_filter( 'body_class', function( $classes ) {
     return $classes;
 } );
 
-/* =========================================================
-   CUSTOM PRODUCT CATEGORIES SETUP
-========================================================= */
-
-/**
- * Create IMPEX football product categories on theme activation.
- * Called via impex_setup plugin or manually.
- */
-function impex_create_product_categories() {
-    if ( ! taxonomy_exists( 'product_cat' ) ) {
-        return;
-    }
-
-    $categories = array(
-        array(
-            'name'        => 'Professional Match Balls',
-            'slug'        => 'professional-match-balls',
-            'description' => 'FIFA approved and elite match balls for professional competitions. Built to the highest standards.',
-        ),
-        array(
-            'name'        => 'Training Balls',
-            'slug'        => 'training-balls',
-            'description' => 'Durable training footballs designed for daily practice sessions and club training.',
-        ),
-        array(
-            'name'        => 'Youth & Junior Balls',
-            'slug'        => 'youth-junior-balls',
-            'description' => 'Size 3 and Size 4 footballs designed for young players and junior leagues.',
-        ),
-        array(
-            'name'        => 'Futsal Balls',
-            'slug'        => 'futsal-balls',
-            'description' => 'Low-bounce futsal balls designed specifically for indoor futsal courts.',
-        ),
-        array(
-            'name'        => 'Beach Soccer Balls',
-            'slug'        => 'beach-soccer-balls',
-            'description' => 'Bright, water-resistant beach soccer balls built for sand play.',
-        ),
-        array(
-            'name'        => 'Custom & Branded Balls',
-            'slug'        => 'custom-branded-balls',
-            'description' => 'Custom logo and branded footballs for clubs, teams, and corporate orders.',
-        ),
-    );
-
-    foreach ( $categories as $cat ) {
-        if ( ! term_exists( $cat['slug'], 'product_cat' ) ) {
-            wp_insert_term(
-                $cat['name'],
-                'product_cat',
-                array(
-                    'slug'        => $cat['slug'],
-                    'description' => $cat['description'],
-                )
-            );
-        }
-    }
-}
-
-// Hook to run on theme activation (also callable from plugin)
-function impex_theme_activation() {
-    impex_create_product_categories();
+// Flush rewrite rules on theme activation
+add_action( 'after_switch_theme', function() {
     flush_rewrite_rules();
-}
-add_action( 'after_switch_theme', 'impex_theme_activation' );
+} );
 
 /* =========================================================
    CUSTOM EXCERPT LENGTH
