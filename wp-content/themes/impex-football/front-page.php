@@ -239,18 +239,33 @@ get_header();
     </div>
 
     <?php
-    if ( function_exists( 'wc_get_products' ) ) :
-        $featured_products = wc_get_products( array(
-            'status'   => 'publish',
-            'limit'    => 8,
-            'orderby'  => 'date',
-            'order'    => 'DESC',
-        ) );
+    $static_products = array(
+        array( 'name' => 'IMPEX Pro Match Ball FIFA Approved', 'price' => '$89.99', 'sku' => 'IMP-PRO-001', 'cat' => 'Professional Match Balls', 'badge' => 'HOT' ),
+        array( 'name' => 'IMPEX Elite Match Ball',             'price' => '$74.99', 'sku' => 'IMP-ELT-002', 'cat' => 'Professional Match Balls', 'badge' => 'NEW' ),
+        array( 'name' => 'IMPEX Training Pro',                 'price' => '$45.99', 'sku' => 'IMP-TRN-003', 'cat' => 'Training Balls',           'badge' => ''    ),
+        array( 'name' => 'IMPEX Club Trainer',                 'price' => '$34.99', 'sku' => 'IMP-CLB-004', 'cat' => 'Training Balls',           'badge' => ''    ),
+        array( 'name' => 'IMPEX Youth Star',                   'price' => '$29.99', 'sku' => 'IMP-YTH-005', 'cat' => 'Youth & Junior Balls',     'badge' => 'NEW' ),
+        array( 'name' => 'IMPEX Junior League',                'price' => '$24.99', 'sku' => 'IMP-JNR-006', 'cat' => 'Youth & Junior Balls',     'badge' => ''    ),
+        array( 'name' => 'IMPEX Futsal Master',                'price' => '$49.99', 'sku' => 'IMP-FUT-007', 'cat' => 'Futsal Balls',             'badge' => 'HOT' ),
+        array( 'name' => 'IMPEX Beach King',                   'price' => '$44.99', 'sku' => 'IMP-BCH-009', 'cat' => 'Beach Soccer Balls',       'badge' => ''    ),
+    );
 
-        if ( ! empty( $featured_products ) ) :
+    // Use live WooCommerce products when available
+    if ( function_exists( 'wc_get_products' ) ) {
+        $wc_products = wc_get_products( array(
+            'status'  => 'publish',
+            'limit'   => 8,
+            'orderby' => 'date',
+            'order'   => 'DESC',
+        ) );
+    } else {
+        $wc_products = array();
+    }
     ?>
+
     <div class="products-grid">
-      <?php foreach ( $featured_products as $product ) :
+    <?php if ( ! empty( $wc_products ) ) : ?>
+      <?php foreach ( $wc_products as $product ) :
         $product_id    = $product->get_id();
         $product_name  = $product->get_name();
         $product_price = $product->get_price_html();
@@ -296,24 +311,9 @@ get_header();
         </div>
       </article>
       <?php endforeach; ?>
-    </div><!-- .products-grid -->
 
     <?php else : ?>
-    <!-- Fallback static product display if WooCommerce not installed -->
-    <div class="products-grid">
-      <?php
-      $static_products = array(
-          array( 'name' => 'IMPEX Pro Match Ball FIFA Approved', 'price' => '$89.99', 'sku' => 'IMP-PRO-001', 'cat' => 'Professional Match Balls', 'badge' => 'HOT' ),
-          array( 'name' => 'IMPEX Elite Match Ball',             'price' => '$74.99', 'sku' => 'IMP-ELT-002', 'cat' => 'Professional Match Balls', 'badge' => 'NEW' ),
-          array( 'name' => 'IMPEX Training Pro',                 'price' => '$45.99', 'sku' => 'IMP-TRN-003', 'cat' => 'Training Balls',           'badge' => ''    ),
-          array( 'name' => 'IMPEX Club Trainer',                 'price' => '$34.99', 'sku' => 'IMP-CLB-004', 'cat' => 'Training Balls',           'badge' => ''    ),
-          array( 'name' => 'IMPEX Youth Star',                   'price' => '$29.99', 'sku' => 'IMP-YTH-005', 'cat' => 'Youth & Junior Balls',     'badge' => 'NEW' ),
-          array( 'name' => 'IMPEX Junior League',                'price' => '$24.99', 'sku' => 'IMP-JNR-006', 'cat' => 'Youth & Junior Balls',     'badge' => ''    ),
-          array( 'name' => 'IMPEX Futsal Master',                'price' => '$49.99', 'sku' => 'IMP-FUT-007', 'cat' => 'Futsal Balls',             'badge' => 'HOT' ),
-          array( 'name' => 'IMPEX Beach King',                   'price' => '$44.99', 'sku' => 'IMP-BCH-009', 'cat' => 'Beach Soccer Balls',       'badge' => ''    ),
-      );
-      foreach ( $static_products as $p ) :
-      ?>
+      <?php foreach ( $static_products as $p ) : ?>
       <article class="product-card">
         <div class="product-image-wrap">
           <?php echo impex_get_football_svg( 120, 'product-placeholder-svg' ); // phpcs:ignore ?>
@@ -334,12 +334,8 @@ get_header();
         </div>
       </article>
       <?php endforeach; ?>
-    </div>
     <?php endif; ?>
-    <?php else : ?>
-    <!-- WooCommerce not active — static display -->
-    <p class="text-grey text-center"><?php esc_html_e( 'Install WooCommerce to display live products.', 'impex-football' ); ?></p>
-    <?php endif; ?>
+    </div><!-- .products-grid -->
 
     <div class="text-center" style="margin-top:3rem;">
       <a href="<?php echo esc_url( function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink( 'shop' ) : home_url( '/shop' ) ); ?>" class="btn btn-primary btn-lg">
